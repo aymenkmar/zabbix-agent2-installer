@@ -4,10 +4,16 @@ set -euo pipefail
 # Install zabbix-agent2 (repo 8.0) on Ubuntu 22.04 / 24.04 / 26.04
 # Must be run as root.
 
-ZABBIX_SERVER="141.94.78.105"
-
 if [ "$(id -u)" -ne 0 ]; then
   echo "Must be run as root" >&2
+  exit 1
+fi
+
+cd /tmp
+
+read -rp "Zabbix server IP: " ZABBIX_SERVER
+if [ -z "$ZABBIX_SERVER" ]; then
+  echo "Zabbix server IP is required" >&2
   exit 1
 fi
 
@@ -24,7 +30,6 @@ esac
 
 DEB="zabbix-release_latest+${PKG_SUFFIX}_all.deb"
 
-cd /tmp
 wget -q "https://repo.zabbix.com/zabbix/8.0/release/ubuntu/pool/main/z/zabbix-release/${DEB}"
 dpkg -i "$DEB"
 
